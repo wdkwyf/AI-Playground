@@ -21,7 +21,7 @@ const targetDir = path.resolve(targetDirArg);
 const envResourcesFiles = fs.readdirSync(envResourcesDir);
 const pythonEmbedZipFile = path.join(envResourcesDir, envResourcesFiles.find((fileName) => { return fileName.startsWith('python') && fileName.endsWith('.zip') }));
 const condaDir = path.join(envResourcesDir, envResourcesFiles.find((fileName) => { return fileName.includes('conda') }));
-const condaBinDir = path.join(condaDir, 'Library', 'bin');
+const condaBinDir = path.join(condaDir, 'bin');
 const getPipFile = path.join(envResourcesDir, 'get-pip.py');
 
 function verifyFilesExist() {

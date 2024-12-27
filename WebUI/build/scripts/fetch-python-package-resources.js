@@ -16,7 +16,7 @@ if (!targetDirArg || !condaEnvDirArg) {
 
 const targetDir = path.resolve(targetDirArg);
 const condaTargetDir = path.join(targetDir, 'conda-env-lib')
-const condaEnvLibraryDir = path.resolve(path.join(condaEnvDirArg, 'Library'));
+const condaEnvLibraryDir = path.resolve(path.join(condaEnvDirArg, 'bin'));
 
 const embeddablePythonUrl = 'https://raw.githubusercontent.com/adang1345/PythonWindows/master/3.11.10/python-3.11.10-embed-amd64.zip';
 const getPipScriptUrl = 'https://bootstrap.pypa.io/get-pip.py'
