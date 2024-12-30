@@ -16,7 +16,7 @@ if (!targetDirArg || !condaEnvDirArg) {
 
 const targetDir = path.resolve(targetDirArg);
 const condaTargetDir = path.join(targetDir, 'conda-env-lib')
-const condaEnvLibraryDir = path.resolve(path.join(condaEnvDirArg, 'bin'));
+const condaEnvLibraryDir = path.resolve(path.join(condaEnvDirArg, 'lib'));
 
 const embeddablePythonUrl = 'https://raw.githubusercontent.com/adang1345/PythonWindows/master/3.11.10/python-3.11.10-embed-amd64.zip';
 const getPipScriptUrl = 'https://bootstrap.pypa.io/get-pip.py'
@@ -62,14 +62,14 @@ function prepareTargetPath() {
 }
 
 function copyLibuvDllsIfNotPresent() {
-    if (fs.existsSync(path.join(condaTargetDir, 'Library', 'bin', 'uv.dll'))) {
+    if (fs.existsSync(path.join(condaTargetDir, 'lib', 'libuv.so'))) {
         console.log(`omitting fetching copying of libuv DLLs, as they already exist`)
     } else {
-        if (!path.join(condaEnvLibraryDir, 'bin', 'uv.dll')) {
+        if (!path.join(condaEnvLibraryDir, 'lib', 'libuv.so')) {
             console.log(`provided conda env at ${condaEnvLibraryDir} is missing uv.dll. Aborting`)
             process.exit(1);
         }
-        fs.cp(condaEnvLibraryDir, path.join(condaTargetDir, 'Library'), { recursive: true }, (err) => {
+        fs.cp(condaEnvLibraryDir, path.join(condaTargetDir, 'lib'), { recursive: true }, (err) => {
             if (err) {
                 console.error(err);
                 console.log('Failed to copy directory');
@@ -81,12 +81,11 @@ function copyLibuvDllsIfNotPresent() {
     }
 }
 
-
 function main() {
     prepareTargetPath()
-    fetchFileIfNotPresent(embeddablePythonUrl)
-    fetchFileIfNotPresent(getPipScriptUrl)
-    fetchFileIfNotPresent(sevenZrExeUrl)
+    // fetchFileIfNotPresent(embeddablePythonUrl)
+    // fetchFileIfNotPresent(getPipScriptUrl)
+    // fetchFileIfNotPresent(sevenZrExeUrl)
     copyLibuvDllsIfNotPresent()
 }
 

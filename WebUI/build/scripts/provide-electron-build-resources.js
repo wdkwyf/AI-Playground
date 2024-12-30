@@ -73,16 +73,16 @@ function clearPreviousZip(zipFilePath) {
 }
 
 function main() {
-    const sevenZipExe = path.join(buildResourcesDir, '7zr.exe');
+    // const sevenZipExe = path.join(buildResourcesDir, '7zr.exe');
 
-    clearPreviousZip(path.join(targetDir, `prototype-python-env.7z`));
-    zipPythonEnv(sevenZipExe, pythenEnvDir, path.join(targetDir, `prototype-python-env.7z`));
+    // clearPreviousZip(path.join(targetDir, `prototype-python-env.7z`));
+    // zipPythonEnv(sevenZipExe, pythenEnvDir, path.join(targetDir, `prototype-python-env.7z`));
 
     symlinkDir(backendDir, path.join(targetDir, 'service'))
     symlinkDir(llamaCppBackendDir, path.join(targetDir, 'LlamaCpp'))
-    copyFiles(targetDir,
-        sevenZipExe
-    )
+    // copyFiles(targetDir,
+    //     sevenZipExe
+    // )
 }
 
 main()

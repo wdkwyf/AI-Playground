@@ -106,7 +106,7 @@ export class PythonService extends ExecutableService {
     }
 
     getExePath(): string {
-        return path.resolve(path.join(this.dir, "python.exe"))
+        return path.resolve(path.join(this.dir, "python"))
     }
 
     async check(): Promise<void> {
@@ -176,7 +176,7 @@ export class PipService extends ExecutableService {
     async install(): Promise<void> {
         this.log("start installing")
         await this.python.ensureInstalled()
-        await this.getPip()
+        // await this.getPip()
         await this.run(["install", "setuptools"])
     }
 

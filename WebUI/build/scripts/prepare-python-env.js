@@ -19,25 +19,14 @@ const envResourcesDir = path.resolve(buildResourcesDirArg);
 const targetDir = path.resolve(targetDirArg);
 
 const envResourcesFiles = fs.readdirSync(envResourcesDir);
-const pythonEmbedZipFile = path.join(envResourcesDir, envResourcesFiles.find((fileName) => { return fileName.startsWith('python') && fileName.endsWith('.zip') }));
 const condaDir = path.join(envResourcesDir, envResourcesFiles.find((fileName) => { return fileName.includes('conda') }));
-const condaBinDir = path.join(condaDir, 'bin');
+const condaBinDir = path.join(condaDir, 'lib');
 const getPipFile = path.join(envResourcesDir, 'get-pip.py');
 
 function verifyFilesExist() {
     console.log('verifying all required files exist.')
-    if (!fs.existsSync(pythonEmbedZipFile)) {
-        console.error('File not found:', pythonEmbedZipFile);
-        process.exit(1);
-    }
-
-    if (!fs.existsSync(getPipFile)) {
-        console.error('File not found:', getPipFile);
-        process.exit(1);
-    }
-
     // check whether libuv has been installed in the conda env
-    const uvDll = path.join(condaBinDir, 'uv.dll');
+    const uvDll = path.join(condaBinDir, 'libuv.so');
     if (!fs.existsSync(uvDll)) {
         console.error('uv.dll not found in reference conda env:', uvDll);
         process.exit(1);
@@ -57,16 +46,19 @@ function preparePythonEnvDir(pyEnvTargetPath) {
     }
 }
 
-function createPythonEnvFromEmbedabblePythonZip(targetDir, pythonEmbedZipFile) {
+function createPythonEnvFromEmbedabblePythonZip(targetDir) {
     preparePythonEnvDir(targetDir);
+    fs.cpSync('/home/lvjingang01/miniforge3/envs/cp311_libuv/bin',targetDir,{recursive:true});
     console.log('Creating python env.')
-    const pythonEmbed = new AdmZip(pythonEmbedZipFile);
-    pythonEmbed.extractAllTo(targetDir, true);
-    console.log('Extracted embeddable python to:', targetDir);
+    
+    // const pythonEmbed = new AdmZip(pythonEmbedZipFile);
+    // pythonEmbed.extractAllTo(targetDir, true);
+    // console.log('Extracted embeddable python to:', targetDir);
 
     // configure path of python env:
     console.log('Patching path of python environment');
     const pthFile = path.join(targetDir, 'python311._pth');
+    // fs.closeSync(fs.openSync(pthFile, 'w'));
     const pthContent = `
 python311.zip
 .
@@ -78,18 +70,19 @@ python311.zip
 import site
 `;
     fs.writeFileSync(pthFile, pthContent);
-    console.log('patched python paths');
+    // console.log('patched python paths');
+    
+    // console.log('Copying get-pip.py');
+    // const getPipDest = path.join(targetDir, 'get-pip.py');
+    // fs.copyFileSync(getPipFile, getPipDest);
+    // console.log('Copied get-pip.py to:', getPipDest);
 
-    console.log('Copying get-pip.py');
-    const getPipDest = path.join(targetDir, 'get-pip.py');
-    fs.copyFileSync(getPipFile, getPipDest);
-    console.log('Copied get-pip.py to:', getPipDest);
-
-    console.log('Installing pip');
-    const pythonExe = path.join(targetDir, 'python.exe');
-    const pipInstallCmd = `"${pythonExe}" "${getPipDest}"`;
-    childProcess.execSync(pipInstallCmd);
-    console.log('Installed pip');
+    // console.log('Installing pip');
+    console.log('used conda python...');
+    const pythonExe = path.join(targetDir,'python');
+    // const pipInstallCmd = `"${pythonExe}" "${getPipDest}"`;
+    // childProcess.execSync(pipInstallCmd);
+    // console.log('Installed pip');
 
     console.log('Installing uv');
     const pipInstallUvCmd = `"${pythonExe}" -m pip install uv`;
@@ -105,7 +98,9 @@ function patchCondaDllsIntoPythonEnv(pyEnvDirPath, condaBinDir) {
     for (const condaDll of fs.readdirSync(condaBinDir)) {
         const src = path.join(condaBinDir, condaDll);
         const dest = path.join(pyEnvDirPath, condaDll);
-        fs.copyFileSync(src, dest);
+        if(fs.lstatSync(src).isFile()){
+            fs.copyFileSync(src, dest);
+        }
     }
     console.log('Copied conda dlls into:', pyEnvDirPath);
 }
@@ -121,7 +116,7 @@ function prepareTargetDir(targetDir) {
 function main() {
     verifyFilesExist();
     prepareTargetDir(targetDir)
-    createPythonEnvFromEmbedabblePythonZip(targetDir, pythonEmbedZipFile);
+    createPythonEnvFromEmbedabblePythonZip(targetDir);
     patchCondaDllsIntoPythonEnv(targetDir, condaBinDir);
 }
 

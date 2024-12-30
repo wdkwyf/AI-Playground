@@ -68,8 +68,8 @@ function main() {
     prepareTargetDir(targetDir)
     copyToTargetDir(envDir, targetDir)
 
-    const pythonExe = existingFileOrExit(path.join(targetDir, 'python.exe'));
-    const getPipFile = existingFileOrExit(path.join(targetDir, 'get-pip.py'));
+    const pythonExe = existingFileOrExit(path.join(targetDir, 'python'));
+    // const getPipFile = existingFileOrExit(path.join(targetDir, 'get-pip.py'));
 
     const platformSpecificRequirementsTxt = existingFileOrExit(path.join(__dirname, '..', '..','..', 'service', `requirements-${platform}.txt`));
     const requirementsTxt = existingFileOrExit(path.join(__dirname, '..', '..', '..', 'service', `requirements.txt`));
@@ -77,7 +77,7 @@ function main() {
     const ggufCostomNoderequirementsTxt = existingFileOrExit(path.join(comfyUIDIr, 'custom_nodes', 'ComfyUI-GGUF', `requirements.txt`));
 
 
-    installPip(pythonExe, getPipFile)
+    // installPip(pythonExe, getPipFile)
     runPipInstall(pythonExe, platformSpecificRequirementsTxt)
     runPipInstall(pythonExe, requirementsTxt)
     runPipInstall(pythonExe, comfyUiRequirementsTxt)
