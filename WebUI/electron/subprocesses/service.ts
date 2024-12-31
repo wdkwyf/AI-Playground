@@ -269,7 +269,6 @@ export class LsLevelZeroService extends ExecutableService {
             ...extraEnv,
             ONEAPI_DEVICE_SELECTOR: "level_zero:*"
         }
-        return super.run(args, env, workDir)
     }
 
     readonly requirementsTxtPath = path.resolve(path.join(this.baseDir, "service/requirements-ls_level_zero.txt"));
@@ -290,10 +289,10 @@ export class LsLevelZeroService extends ExecutableService {
     }
 
     async install(): Promise<void> {
-        this.log("start installing")
+        this.log("start installing!")
         await this.uvPip.ensureInstalled()
         await this.installRequirements()
-        await this.cloneLsLevelZero()
+        // await this.cloneLsLevelZero()
     }
 
     async repair(checkError: ServiceCheckError): Promise<void> {
@@ -308,71 +307,28 @@ export class LsLevelZeroService extends ExecutableService {
             await this.installRequirements()
             // fallthrough
         case "main":
-            await this.cloneLsLevelZero()
+            await this.yufeiMain()
         }
     }
 
     async installRequirements(): Promise<void> {
         await this.uvPip.installRequirementsTxt(this.requirementsTxtPath)
     }
-
-    readonly srcExePath = path.resolve(path.join(this.baseDir, "service/tools/ls_level_zero.exe"));
-    private async cloneLsLevelZero(): Promise<void> {
-        existingFileOrError(this.srcExePath)
-        if (filesystem.existsSync(this.getExePath())) {
-            filesystem.removeSync(this.getExePath())
-        }
-        this.log(`copying ls-level-zero to ${this.getExePath()}`)
-        await filesystem.copy(this.srcExePath, this.getExePath())
+    private async yufeiMain():Promise<void>{
+        console.log('main')
     }
+    // readonly srcExePath = path.resolve(path.join(this.baseDir, "service/tools/ls_level_zero.exe"));
+    // private async cloneLsLevelZero(): Promise<void> {
+    //     existingFileOrError(this.srcExePath)
+    //     if (filesystem.existsSync(this.getExePath())) {
+    //         filesystem.removeSync(this.getExePath())
+    //     }
+    //     this.log(`copying ls-level-zero to ${this.getExePath()}`)
+    //     await filesystem.copy(this.srcExePath, this.getExePath())
+    // }
 
     private allLevelZeroDevices: {name: string, device_id: number, arch: string}[] = [];
     private selectedDeviceIdx: number = -1;
-
-    async detectDevice(): Promise<string> {
-        if (this.selectedDeviceIdx >= 0 && this.selectedDeviceIdx < this.allLevelZeroDevices.length) {
-            return this.allLevelZeroDevices[this.selectedDeviceIdx].arch;
-        }
-
-        this.log("Detecting device");
-        try {
-            const devices = JSON.parse(await this.run());
-            this.allLevelZeroDevices = devices.map((d: {id: number, name: string, device_id: number}) => {
-                return {name: d.name, device_id: d.device_id, arch: getDeviceArch(d.device_id)};
-            });
-            this.selectBestDevice();
-            return this.allLevelZeroDevices[this.selectedDeviceIdx].arch;
-        } catch (e) {
-            this.logError(`Failed to detect device due to ${e}`);
-            throw e;
-        }
-    }
-
-    private selectBestDevice(): number {
-        let priority = -1;
-        for (let i = 0; i < this.allLevelZeroDevices.length; i++) {
-            const device = this.allLevelZeroDevices[i];
-            const deviceArchPriority = getArchPriority(device.arch);
-            if (deviceArchPriority > priority) {
-                this.selectedDeviceIdx = i;
-                priority = deviceArchPriority;
-            }
-        }
-        return this.selectedDeviceIdx;
-    }
-
-    async getDeviceSelectorEnv(): Promise<{ONEAPI_DEVICE_SELECTOR: string}> {
-        if (this.selectedDeviceIdx < 0 || this.selectedDeviceIdx >= this.allLevelZeroDevices.length) {
-            await this.detectDevice();
-        }
-
-        if (this.selectedDeviceIdx < 0) {
-            this.logError("No supported device");
-            return {ONEAPI_DEVICE_SELECTOR: "level_zero:*"};
-        }
-
-        return {ONEAPI_DEVICE_SELECTOR: `level_zero:${this.selectedDeviceIdx}`};
-    }
 }
 
 export class GitService extends ExecutableService {

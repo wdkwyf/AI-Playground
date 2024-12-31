@@ -242,7 +242,7 @@ function initEventHandle() {
         return {
             showIndex: settings.showIndex,
             showBenchmark: settings.showBenchmark,
-            isAdminExec: isAdmin(),
+            isAdminExec: true,
             locale: app.getLocale(),
         };
     });

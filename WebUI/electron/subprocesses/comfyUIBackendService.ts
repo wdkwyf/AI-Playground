@@ -100,16 +100,12 @@ export class ComfyUiBackendService extends LongLivedPythonApiService {
             await self.git.ensureInstalled();
 
             yield {serviceName: self.name, step: `Detecting intel device`, status: "executing", debugMessage: `Trying to identify intel hardware`};
-            const deviceArch = await self.lsLevelZero.detectDevice();
+            const deviceArch = "acm";
             yield {serviceName: self.name, step: `Detecting intel device`, status: "executing", debugMessage: `detected intel hardware ${deviceArch}`};
 
             yield {serviceName: self.name, step: `install dependencies`, status: "executing", debugMessage: `installing dependencies`};
             const deviceSpecificRequirements = existingFileOrError(path.join(aiBackendServiceDir(), `requirements-${deviceArch}.txt`))
             await self.uvPip.pip.run(["install", "-r", deviceSpecificRequirements]);
-            if (deviceArch === "bmg") {
-                const intelSpecificExtension = existingFileOrError(self.customIntelExtensionForPytorch)
-                await self.uvPip.pip.run(["install", intelSpecificExtension]);
-            }
             yield {serviceName: self.name, step: `install dependencies`, status: "executing", debugMessage: `dependencies installed`};
 
             yield {serviceName: self.name, step: `install comfyUI`, status: "executing", debugMessage: `installing comfyUI base repo`};

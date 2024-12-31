@@ -34,7 +34,7 @@ export class LlamaCppBackendService extends LongLivedPythonApiService {
             await this.lsLevelZero.ensureInstalled();
             await this.uvPip.ensureInstalled();
 
-            const deviceArch = await self.lsLevelZero.detectDevice();
+            const deviceArch = "acm";
             yield {serviceName: self.name, step: `Detecting intel device`, status: "executing", debugMessage: `detected intel hardware ${deviceArch}`};
 
             yield {serviceName: self.name, step: `install dependencies`, status: "executing", debugMessage: `installing dependencies`};
@@ -60,7 +60,7 @@ export class LlamaCppBackendService extends LongLivedPythonApiService {
             "SYCL_ENABLE_DEFAULT_CONTEXTS": "1",
             "SYCL_CACHE_PERSISTENT": "1",
             "PYTHONIOENCODING": "utf-8",
-            ...await this.lsLevelZero.getDeviceSelectorEnv(),
+            "ONEAPI_DEVICE_SELECTOR": "level_zero:1",
         };
 
         const apiProcess = spawn(this.python.getExePath(), ["llama_web_api.py", "--port", this.port.toString()], {
