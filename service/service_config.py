@@ -17,7 +17,7 @@ git = {
     "exePath": "../portable-git/cmd/git.exe",
 }
 
-comfyui_python_exe = "../comfyui-backend-env/python.exe"
+comfyui_python_exe = "../comfyui-backend-env/python"
 comfyui_python_env = "../comfyui-backend-env"
 
 comfy_ui_model_paths = {

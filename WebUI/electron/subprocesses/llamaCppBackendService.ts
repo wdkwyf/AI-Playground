@@ -40,7 +40,7 @@ export class LlamaCppBackendService extends LongLivedPythonApiService {
             yield {serviceName: self.name, step: `install dependencies`, status: "executing", debugMessage: `installing dependencies`};
             const commonRequirements = existingFileOrError(path.join(self.serviceDir, 'requirements.txt'))
             const intelSpecificExtensionDir = app.isPackaged ? this.baseDir : path.join(__dirname, '../../external');
-            const intelSpecificExtension = existingFileOrError(path.join(intelSpecificExtensionDir, 'llama_cpp_python-0.3.2-cp311-cp311-win_amd64.whl'))
+            const intelSpecificExtension = existingFileOrError(path.join(intelSpecificExtensionDir, 'llama_cpp_python-0.3.2-cp311-cp311-linux_x86_64.whl'))
             await this.uvPip.pip.run(["install", intelSpecificExtension]);
             await this.uvPip.run(["install", "-r", commonRequirements]);
             yield {serviceName: self.name, step: `install dependencies`, status: "executing", debugMessage: `dependencies installed`};
