@@ -56,7 +56,7 @@ export class AiBackendService extends LongLivedPythonApiService {
             "SYCL_ENABLE_DEFAULT_CONTEXTS": "1",
             "SYCL_CACHE_PERSISTENT": "1",
             "PYTHONIOENCODING": "utf-8",
-            "ONEAPI_DEVICE_SELECTOR": "level_zero:1",
+            "ONEAPI_DEVICE_SELECTOR": "level_zero:0",
         };
 
         const apiProcess = spawn(this.python.getExePath(), ["web_api.py", "--port", this.port.toString()], {
