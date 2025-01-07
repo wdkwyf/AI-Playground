@@ -187,9 +187,6 @@ export class PipService extends ExecutableService {
         }
 
         switch (checkError.stage) {
-        default:
-            await this.getPip()
-            // fallthrough
         case "setuptools":
             await this.run(["install", "setuptools"])
         }
@@ -334,21 +331,22 @@ export class LsLevelZeroService extends ExecutableService {
 export class GitService extends ExecutableService {
     constructor() {
         super("git", "")
-        this.dir = path.resolve(path.join(this.baseDir, "portable-git"))
+        // this.dir = path.resolve(path.join(this.baseDir, "portable-git"))
+        this.dir = "/usr/bin"
     }
 
     getExePath(): string {
-        return path.resolve(path.join(this.dir, "cmd/git.exe"))
+        return path.resolve(path.join(this.dir, "git"))
     }
 
     async run(args: string[] = [], extraEnv?: {}, workDir?: string): Promise<string> {
         // Explicitly specify the cert file bundled with portable git,
         // to avoid being affected by the system git configuration.
-        const env = {
-            ...extraEnv,
-            GIT_SSL_CAINFO: path.resolve(path.join(this.dir, "mingw64/etc/ssl/certs/ca-bundle.crt"))
-        }
-        return super.run(args, env, workDir)
+        // const env = {
+        //     ...extraEnv,
+        //     GIT_SSL_CAINFO: path.resolve(path.join(this.dir, "mingw64/etc/ssl/certs/ca-bundle.crt"))
+        // }
+        return super.run(args)
     }
 
     async check(): Promise<void> {
@@ -363,8 +361,8 @@ export class GitService extends ExecutableService {
 
     async install(): Promise<void> {
         this.log("start installing")
-        await this.downloadGitZip()
-        await this.unzipGit()
+        // await this.downloadGitZip()
+        // await this.unzipGit()
 
         // cleanup
         if (filesystem.existsSync(this.zipPath)) {
