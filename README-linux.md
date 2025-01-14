@@ -19,7 +19,27 @@ Follow the steps below to install AI Playground on Linux.  These have been teste
 
 1. Install base packages
 ```bash
-$ sudo apt update && sudo apt install -y clinfo curl intel-opencl-icd libgl1 libgomp1 libtbb12 libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 wget xauth xvfb ca-certificates git gnupg
+$ sudo apt update && sudo apt install -y \
+  ca-certificates \
+  clinfo \
+  curl \
+  git \
+  gnupg \
+  intel-opencl-icd \
+  libgl1 \
+  libgomp1 \
+  libtbb12 \
+  libgtk2.0-0t64 \
+  libgtk-3-0t64 \
+  libgbm-dev \
+  libnotify-dev \
+  libnss3 \
+  libxss1 \
+  libasound2t64 \
+  libxtst6 \
+  wget \
+  xauth \
+  xvfb
 ```
 
 2. Install GPU drivers
