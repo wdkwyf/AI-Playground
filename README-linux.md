@@ -162,3 +162,11 @@ Error
 [llamacpp-backend]: Aborting set up of llamacpp-backend service environment
 [electron-backend]: Received terminal progress update for set up request for llamacpp-backend
 ```
+### (Issue #5) Execution error running under WSL
+Attempting to use any IPEX functionality with app running on WSL causes the following error
+
+Error
+```
+Abort was called at 875 line in file:
+./shared/source/os_interface_windows/wddm_memory_manager.cpp
+```
