@@ -17,42 +17,55 @@ See 'Known Issues' below for more details
 
 Follow the steps below to install AI Playground on Linux.  These have been tested on a clean installation of Ubuntu 24.04.1 with ARC A770 discrete GPU installed.
 
+1. Install base packages
 ```bash
-# Install base packages
 $ sudo apt update && sudo apt install -y clinfo curl intel-opencl-icd libgl1 libgomp1 libtbb12 libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 wget xauth xvfb ca-certificates git gnupg
+```
 
-# Install GPU drivers
+2. Install GPU drivers
+```bash
 $ wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | \
   sudo gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg && \
   echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu noble client" | \
   sudo tee /etc/apt/sources.list.d/intel-gpu-noble.list && \
   sudo apt update && \
   sudo apt install -y libze-intel-gpu1 libze1 intel-opencl-icd clinfo intel-gsc libze-dev intel-ocloc
+```
 
-# Install latest NPM > 10.x
+3. Install latest NPM > 10.x
+```bash
 $ curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
   sudo -E bash nodesource_setup.sh && \
   sudo apt install -y nodejs
+```
 
-# Install Mambaforge
+4. Install Mambaforge
+```bash
 $ cd /tmp && \
   wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
   bash Miniforge3-$(uname)-$(uname -m).sh -b && \
   rm Miniforge3-$(uname)-$(uname -m).sh 
+```
 
-# Python environment
+5. Python environment
+```bash
 $ source ~/miniforge3/bin/activate && \
   conda create -n cp311_libuv python=3.11 libuv -y && \
   conda_path=$(conda env list | grep cp311_libuv | awk '{print $2}')
+```
 
-# AI Playground
+6. Install AI Playground
+```bash
 $ cd && \
   git clone -b dev https://github.com/wdkwyf/AI-Playground && \
   cd AI-Playground/WebUI && \
   npm install && \
   npm run fetch-build-resources -- --conda_env_dir=$conda_path
+```
 
-# Workaround: currently need to manually edit path and replace with vlue of $conda_path/bin.  Here is an example below diff --git a/WebUI/build/scripts/prepare-python-env.js b/WebUI/build/scripts/prepare-python-env.js
+*Workaround*: currently need to manually edit path and replace with vlue of $conda_path/bin.  Here is an example below diff
+```
+--git a/WebUI/build/scripts/prepare-python-env.js b/WebUI/build/scripts/prepare-python-env.js
 index 30f7812..46133cf 100644
 --- a/WebUI/build/scripts/prepare-python-env.js
 +++ b/WebUI/build/scripts/prepare-python-env.js
@@ -67,16 +80,17 @@ index 30f7812..46133cf 100644
      console.log('Creating python env.')
 
      // const pythonEmbed = new AdmZip(pythonEmbedZipFile);
+```
 
-$  npm run prepare-build
-
-# Run AI Playground
+7. Complete AI Playground installation
+```bash
+$ npm run prepare-build
 $ npm run dev
 ```
 
-Launch the user interface and click on the 'Install' button to complete the remaining Python runtime dependencies required by AI Playground.  
+8. Launch the user interface and click on the 'Install' button to complete the remaining Python runtime dependencies required by AI Playground.  
 
-Workaround: Sometimes the 'continue' button does not work.  Workaround is to close app and relaunch using 'npm run dev' command
+*Workaround*: Sometimes the 'continue' button does not work.  Workaround is to close app and relaunch using 'npm run dev' command
 
 
 ## Subsequent Invocations
@@ -84,9 +98,9 @@ Workaround: Sometimes the 'continue' button does not work.  Workaround is to clo
 Follow the steps below to subsequently run AI Playground, after it has been installed above.
 
 ```bash
-$ source ~/miniforge3/bin/activate
-$ cd && cd AI-Playground/WebUI
-$ npm run dev
+$ source ~/miniforge3/bin/activate && \
+  cd && cd AI-Playground/WebUI && \
+  npm run dev
 ```
 
 ## Known Issues
