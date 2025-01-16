@@ -48,7 +48,8 @@ function preparePythonEnvDir(pyEnvTargetPath) {
 
 function createPythonEnvFromEmbedabblePythonZip(targetDir) {
     preparePythonEnvDir(targetDir);
-    fs.cpSync('/home/lvjingang01/miniforge3/envs/cp311_libuv/bin',targetDir,{recursive:true});
+    const userInfo = os.userInfo().username;
+    fs.cpSync(path.join("/home/",userInfo,"miniforge3/envs/cp311_libuv/bin"),targetDir,{recursive:true});
     console.log('Creating python env.')
     
     // const pythonEmbed = new AdmZip(pythonEmbedZipFile);
